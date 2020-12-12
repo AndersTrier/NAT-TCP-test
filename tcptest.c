@@ -116,7 +116,7 @@ int main(int argc, char *argv[]){
             return EXIT_FAILURE;
         } else if (ret) {
             for (int i = 0; i < NCONNECTIONS; i++) {
-                if (FD_ISSET(tcpsessions[i], &rfds)) {
+                if (tcpsessions[i] != -1 && FD_ISSET(tcpsessions[i], &rfds)) {
                     ssize_t readret = read(tcpsessions[i], &buf, 1);
                     if (readret != -1 || errno != ETIMEDOUT) {
                         printf("[-] shouldn't happen:\n"

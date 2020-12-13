@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
                     } else if (readret > 0) {
                         aint[readret] = '\0';
                         time_t alivetime = time(NULL) - startup_time;
-                        printf("[+] Connection %d returned after %ld:%02ld: %s\n", i, alivetime/60, alivetime%60, aint);
+                        printf("[+] Connection %d returned after %ldm %lds: %s\n", i, alivetime/60, alivetime%60, aint);
                     } else {
                         printf("[-] Shoudln't happen. Connection %d\n", i);
                     }

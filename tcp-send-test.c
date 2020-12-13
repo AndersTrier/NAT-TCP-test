@@ -62,6 +62,8 @@ int main(int argc, char *argv[]){
     printf("\n[+] All connections established\n");
 
     for (int i = 0; i < NCONNECTIONS; i++) {
+        // This is not exact - we'll gradually drift
+        // by the time it takes to write() and read()
         sleep(60);
         if (write(tcpsessions[i], "A", 1) != 1) {
             if (errno != ETIMEDOUT) {

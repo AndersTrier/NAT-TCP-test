@@ -23,6 +23,7 @@ int do_connect(struct sockaddr_in *dst) {
         return -1;
     }
 
+/* for faster debugging
     // specifies the maximum amount of time in milliseconds 
     // that transmitted data may remain unacknowledged before
     // TCP will forcibly close the corresponding connection
@@ -32,11 +33,12 @@ int do_connect(struct sockaddr_in *dst) {
         perror("setsockopt TCP_USER_TIMEOUT");
         return -1;
     }
+*/
 
     return s;
 }
 
-#define NCONNECTIONS 5
+#define NCONNECTIONS 130
 int main(int argc, char *argv[]){
     int tcpsessions[NCONNECTIONS] = {0};
     char buf;
@@ -66,7 +68,7 @@ int main(int argc, char *argv[]){
                 perror("write");
                 return EXIT_FAILURE;
             }
-            printf("[+] Connection %d is dead (write)\n", i);
+            printf("[-] Connection %d is dead (write)\n", i);
             close(tcpsessions[i]);
             continue;
         }
@@ -76,12 +78,12 @@ int main(int argc, char *argv[]){
                 perror("read");
                 return EXIT_FAILURE;
             }
-            printf("[+] Connection %d is dead (read)\n", i);
+            printf("[-] Connection %d is dead (read)\n", i);
             close(tcpsessions[i]);
             continue;
         }
 
-        printf("Connection %d worked\n", i);
+        printf("[+] Connection %d worked\n", i);
 
         close(tcpsessions[i]);
     }

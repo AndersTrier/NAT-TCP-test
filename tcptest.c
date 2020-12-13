@@ -73,11 +73,11 @@ int main(int argc, char *argv[]){
 
     printf("[+] Trying to establish connections: ");
     for (int i = 0; i < NCONNECTIONS; i++) {
-        fflush(stdout);
         // The first connection will have a keepalivetime of 1 min,
         // the second one 2 min, etc.
         keepalivetime[i] = (i + 1) * 60;
         printf("%d (%ds), ", i + 1, keepalivetime[i]);
+        fflush(stdout);
         tcpsessions[i] = do_connect(&dst_addr, keepalivetime[i]);
         if (tcpsessions[i] == -1) {
             return EXIT_FAILURE;

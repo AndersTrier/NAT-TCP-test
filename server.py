@@ -3,7 +3,7 @@
 import sys, time
 
 try:
-    sleeptime = input()
+    sleeptime = sys.stdin.readline()
 except EOFError:
     # Connection was closed
     sys.exit()

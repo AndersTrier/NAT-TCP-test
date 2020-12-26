@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
     struct sockaddr_in dst_addr = {
         .sin_family = AF_INET,
         .sin_port   = htons(31415),
-        .sin_addr   = inet_addr("130.225.254.98"),
+        .sin_addr   = inet_addr("130.225.254.111"),
     };
 
     printf("[+] Trying to establish connections: ");

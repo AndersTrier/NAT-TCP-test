@@ -35,7 +35,7 @@ int do_connect(struct sockaddr_in *dst, int keepalive_time) {
     // SO_KEEPALIVE has been set on this socket.
     if (setsockopt(s, IPPROTO_TCP, TCP_KEEPIDLE,
                 &keepalive_time, sizeof keepalive_time) == -1) {
-        perror("setsockopt SO_KEEPALIVE");
+        perror("setsockopt SO_KEEPIDLE");
         return -1;
     }
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
         // The first connection will have a keepalivetime of 1 min,
         // the second one 2 min, etc.
         keepalivetime[i] = (i + 1) * 60;
-        printf("%d (%ds), ", i + 1, keepalivetime[i]);
+        printf("%d (%ds), ", i, keepalivetime[i]);
         fflush(stdout);
         tcpsessions[i] = do_connect(&dst_addr, keepalivetime[i]);
         if (tcpsessions[i] == -1) {

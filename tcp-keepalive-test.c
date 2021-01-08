@@ -10,6 +10,9 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
+#ifdef __APPLE__
+#define TCP_KEEPIDLE TCP_KEEPALIVE
+#endif
 
 int do_connect(struct sockaddr_in *dst, int keepalive_time) {
     int s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);

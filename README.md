@@ -23,4 +23,4 @@ By default, the tests are configured to connect to a server sponsored by the non
 
 To compile, just run `make`. 
 
-You should start both `tcp-recv-test` and `tcp-send-test`, and wait for about 2½ hours. Then look for when connections started failing.
+You should start both `tcp-recv-test` and `tcp-send-test`, and wait for about 2½ hours. Then look for the last connection that worked - that timer + 1 min is probably the TCP idle-timeout of your NAT.

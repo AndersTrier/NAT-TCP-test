@@ -2,7 +2,7 @@
 
 You can use these programs to test how long time your own NAT, or your ISP's CGN, will wait before dropping an idle TCP connection.
 
-I wrote a more thorough explanation of this issue on my blog, and blamed my ISP for killing my SSH connections: <http://anderstrier.dk/2021/01/10/my-isp-is-killing-my-idle-ssh-sessions-yours-might-be-too/>
+I wrote a more thorough explanation of this issue on my blog, and blamed my ISP for killing my SSH connections: <http://anderstrier.dk/2021/01/11/my-isp-is-killing-my-idle-ssh-sessions-yours-might-be-too/>
 
 But here's the tl;dr:
 

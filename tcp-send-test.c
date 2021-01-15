@@ -24,7 +24,7 @@ int do_connect(struct sockaddr_in *dst) {
     }
 
 /* for faster debugging
-    // specifies the maximum amount of time in milliseconds 
+    // specifies the maximum amount of time in milliseconds
     // that transmitted data may remain unacknowledged before
     // TCP will forcibly close the corresponding connection
     // and return ETIMEDOUT to the application.
@@ -60,6 +60,7 @@ int main(int argc, char *argv[]){
     }
 
     printf("\n[+] All connections established\n");
+    fflush(stdout);
 
     for (int i = 0; i < NCONNECTIONS; i++) {
         // This is not exact - we'll gradually drift
@@ -71,6 +72,7 @@ int main(int argc, char *argv[]){
                 return EXIT_FAILURE;
             }
             printf("[-] Connection %d is dead (write)\n", i);
+            fflush(stdout);
             close(tcpsessions[i]);
             continue;
         }
@@ -81,11 +83,13 @@ int main(int argc, char *argv[]){
                 return EXIT_FAILURE;
             }
             printf("[-] Connection %d is dead (read)\n", i);
+            fflush(stdout);
             close(tcpsessions[i]);
             continue;
         }
 
         printf("[+] Connection %d worked\n", i);
+        fflush(stdout);
 
         close(tcpsessions[i]);
     }

@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
         }
     }
     printf("\n[+] All connections established\n");
-
+    fflush(stdout);
 
     // select() loop
     for (;;) {
@@ -109,8 +109,9 @@ int main(int argc, char *argv[]){
         }
 
         printf("[+] Waiting for a connection to timeout.\n");
-        printf("[+] Open connections: %d\n",
-                openconnections);
+        printf("[+] Open connections: %d\n", openconnections);
+        fflush(stdout);
+
         ret = select(maxfd + 1, &rfds, NULL, NULL, NULL);
         if (ret == -1) {
             if (errno == EINTR)
@@ -137,6 +138,7 @@ int main(int argc, char *argv[]){
                     printf("Connection %d, keepalivetime: %dm %ds\n",
                             i, keepalivetime[i]/60, keepalivetime[i]%60);
                     close(tcpsessions[i]);
+                    fflush(stdout);
                     tcpsessions[i] = -1;
                 }
             }
@@ -147,4 +149,3 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
-

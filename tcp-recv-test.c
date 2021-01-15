@@ -45,7 +45,6 @@ int do_connect(struct sockaddr_in *dst) {
 int main(int argc, char *argv[]){
     int tcpsessions[NCONNECTIONS] = {0};
     int serversleeptime[NCONNECTIONS] = {0};
-    char buf;
     char aint[64] = {0};
     int ret;
     time_t startup_time = time(NULL);

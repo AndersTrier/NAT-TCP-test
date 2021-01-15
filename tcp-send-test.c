@@ -43,7 +43,6 @@ int do_connect(struct sockaddr_in *dst) {
 int main(int argc, char *argv[]){
     int tcpsessions[NCONNECTIONS] = {0};
     char buf;
-    int ret;
     struct sockaddr_in dst_addr = {
         .sin_family = AF_INET,
         .sin_port   = htons(31415),

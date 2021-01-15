@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
+#include "util.h"
 
 int do_connect(struct sockaddr_in *dst) {
     int s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]){
         .sin_addr   = inet_addr("130.225.254.111"),
     };
 
-    printf("[+] Trying to establish connections: ");
+    msg("[+] Trying to establish connections: ");
     for (int i = 0; i < NCONNECTIONS; i++) {
         printf("%d ", i);
         fflush(stdout);
@@ -58,9 +59,9 @@ int main(int argc, char *argv[]){
             return EXIT_FAILURE;
         }
     }
+    printf("\n");
 
-    printf("\n[+] All connections established\n");
-    fflush(stdout);
+    msg("[+] All connections established\n");
 
     for (int i = 0; i < NCONNECTIONS; i++) {
         // This is not exact - we'll gradually drift
@@ -71,8 +72,7 @@ int main(int argc, char *argv[]){
                 perror("write");
                 return EXIT_FAILURE;
             }
-            printf("[-] Connection %d is dead (write)\n", i);
-            fflush(stdout);
+            msg("[-] Connection %d is dead (write)\n", i);
             close(tcpsessions[i]);
             continue;
         }
@@ -82,14 +82,11 @@ int main(int argc, char *argv[]){
                 perror("read");
                 return EXIT_FAILURE;
             }
-            printf("[-] Connection %d is dead (read)\n", i);
-            fflush(stdout);
+            msg("[-] Connection %d is dead (read)\n", i);
             close(tcpsessions[i]);
             continue;
         }
-
-        printf("[+] Connection %d worked\n", i);
-        fflush(stdout);
+        msg("[+] Connection %d worked\n", i);
 
         close(tcpsessions[i]);
     }

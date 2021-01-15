@@ -26,7 +26,7 @@ int do_connect(struct sockaddr_in *dst) {
     }
 
 /* for faster debugging
-    // specifies the maximum amount of time in milliseconds 
+    // specifies the maximum amount of time in milliseconds
     // that transmitted data may remain unacknowledged before
     // TCP will forcibly close the corresponding connection
     // and return ETIMEDOUT to the application.
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
     }
 
     printf("\n[+] All connections established\n");
-    
+
     // select() loop
     for (;;) {
         fd_set rfds;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]){
                         time_t alivetime = time(NULL) - startup_time;
                         printf("[+] Connection %d returned after %ldm %lds: %s\n", i, alivetime/60, alivetime%60, aint);
                     } else {
-                        printf("[-] Shoudln't happen. Connection %d\n", i);
+                        printf("[-] Shouldn't happen. Connection %d\n", i);
                     }
 
                     close(tcpsessions[i]);

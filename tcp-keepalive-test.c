@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
+#include "util.h"
+
 #ifdef __APPLE__
 #define TCP_KEEPIDLE TCP_KEEPALIVE
 #endif
@@ -86,8 +88,8 @@ int main(int argc, char *argv[]){
             return EXIT_FAILURE;
         }
     }
-    printf("\n[+] All connections established\n");
-
+    printf("\n");
+    msg("[+] All connections established\n");
 
     // select() loop
     for (;;) {
@@ -104,13 +106,13 @@ int main(int argc, char *argv[]){
             openconnections++;
         }
         if (openconnections == 0) {
-            printf("[+] No more alive connections left\n");
+            msg("[+] No more alive connections left\n");
             return EXIT_SUCCESS;
         }
 
-        printf("[+] Waiting for a connection to timeout.\n");
-        printf("[+] Open connections: %d\n",
-                openconnections);
+        msg("[+] Waiting for a connection to timeout.\n");
+        msg("[+] Open connections: %d\n", openconnections);
+
         ret = select(maxfd + 1, &rfds, NULL, NULL, NULL);
         if (ret == -1) {
             if (errno == EINTR)
@@ -122,7 +124,7 @@ int main(int argc, char *argv[]){
                 if (tcpsessions[i] != -1 && FD_ISSET(tcpsessions[i], &rfds)) {
                     ssize_t readret = read(tcpsessions[i], &buf, 1);
                     if (readret != -1 || errno != ETIMEDOUT) {
-                        printf("[-] shouldn't happen:\n"
+                        msg("[-] shouldn't happen:\n"
                                 "readret: %ld\n"
                                 "errno: %d (%m)\n"
                                 "i: %d\n"
@@ -133,18 +135,18 @@ int main(int argc, char *argv[]){
                         tcpsessions[i] = -1;
                         continue;
                     }
-                    printf("[+] TCP connection died: ");
+                    msg("[+] TCP connection died: ");
                     printf("Connection %d, keepalivetime: %dm %ds\n",
                             i, keepalivetime[i]/60, keepalivetime[i]%60);
+                    fflush(stdout);
                     close(tcpsessions[i]);
                     tcpsessions[i] = -1;
                 }
             }
         } else {
-            printf("[+] No data\n");
+            msg("[+] No data\n");
         }
     }
 
     return 0;
 }
-

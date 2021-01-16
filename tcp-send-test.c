@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
+#include "util.h"
 
 int do_connect(struct sockaddr_in *dst) {
     int s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -24,7 +25,7 @@ int do_connect(struct sockaddr_in *dst) {
     }
 
 /* for faster debugging
-    // specifies the maximum amount of time in milliseconds 
+    // specifies the maximum amount of time in milliseconds
     // that transmitted data may remain unacknowledged before
     // TCP will forcibly close the corresponding connection
     // and return ETIMEDOUT to the application.
@@ -42,14 +43,13 @@ int do_connect(struct sockaddr_in *dst) {
 int main(int argc, char *argv[]){
     int tcpsessions[NCONNECTIONS] = {0};
     char buf;
-    int ret;
     struct sockaddr_in dst_addr = {
         .sin_family = AF_INET,
         .sin_port   = htons(31415),
         .sin_addr   = inet_addr("130.225.254.111"),
     };
 
-    printf("[+] Trying to establish connections: ");
+    msg("[+] Trying to establish connections: ");
     for (int i = 0; i < NCONNECTIONS; i++) {
         printf("%d ", i);
         fflush(stdout);
@@ -58,8 +58,9 @@ int main(int argc, char *argv[]){
             return EXIT_FAILURE;
         }
     }
+    printf("\n");
 
-    printf("\n[+] All connections established\n");
+    msg("[+] All connections established\n");
 
     for (int i = 0; i < NCONNECTIONS; i++) {
         // This is not exact - we'll gradually drift
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]){
                 perror("write");
                 return EXIT_FAILURE;
             }
-            printf("[-] Connection %d is dead (write)\n", i);
+            msg("[-] Connection %d is dead (write)\n", i);
             close(tcpsessions[i]);
             continue;
         }
@@ -80,12 +81,11 @@ int main(int argc, char *argv[]){
                 perror("read");
                 return EXIT_FAILURE;
             }
-            printf("[-] Connection %d is dead (read)\n", i);
+            msg("[-] Connection %d is dead (read)\n", i);
             close(tcpsessions[i]);
             continue;
         }
-
-        printf("[+] Connection %d worked\n", i);
+        msg("[+] Connection %d worked\n", i);
 
         close(tcpsessions[i]);
     }

@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
+#include "util.h"
 
 int do_connect(struct sockaddr_in *dst) {
     int s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -26,7 +27,7 @@ int do_connect(struct sockaddr_in *dst) {
     }
 
 /* for faster debugging
-    // specifies the maximum amount of time in milliseconds 
+    // specifies the maximum amount of time in milliseconds
     // that transmitted data may remain unacknowledged before
     // TCP will forcibly close the corresponding connection
     // and return ETIMEDOUT to the application.
@@ -44,7 +45,6 @@ int do_connect(struct sockaddr_in *dst) {
 int main(int argc, char *argv[]){
     int tcpsessions[NCONNECTIONS] = {0};
     int serversleeptime[NCONNECTIONS] = {0};
-    char buf;
     char aint[64] = {0};
     int ret;
     time_t startup_time = time(NULL);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
         .sin_addr   = inet_addr("130.225.254.111"),
     };
 
-    printf("[+] Trying to establish connections: ");
+    msg("[+] Trying to establish connections: ");
     for (int i = 0; i < NCONNECTIONS; i++) {
         serversleeptime[i] = (i+1) * 60;
         printf("%d (%ds), ", i, serversleeptime[i]);
@@ -67,8 +67,9 @@ int main(int argc, char *argv[]){
         write(tcpsessions[i], aint, strnlen(aint, sizeof aint));
     }
 
-    printf("\n[+] All connections established\n");
-    
+    printf("\n");
+    msg("[+] All connections established\n");
+
     // select() loop
     for (;;) {
         fd_set rfds;
@@ -84,13 +85,13 @@ int main(int argc, char *argv[]){
             openconnections++;
         }
         if (openconnections == 0) {
-            printf("[+] No more alive connections left\n");
+            msg("[+] No more alive connections left\n");
             return EXIT_SUCCESS;
         }
 
-        printf("[+] Waiting for the server to close a connection\n");
-        printf("[+] Open connections: %d\n",
-                openconnections);
+        msg("[+] Waiting for the server to close a connection\n");
+        msg("[+] Open connections: %d\n", openconnections);
+
         ret = select(maxfd + 1, &rfds, NULL, NULL, NULL);
         if (ret == -1) {
             if (errno == EINTR)
@@ -102,7 +103,7 @@ int main(int argc, char *argv[]){
                 if (tcpsessions[i] != -1 && FD_ISSET(tcpsessions[i], &rfds)) {
                     ssize_t readret = read(tcpsessions[i], aint, sizeof(aint)-1);
                     if (readret == -1) {
-                        printf("[-] Shouldn't happen:\n"
+                        msg("[-] Shouldn't happen:\n"
                                 "readret: %ld\n"
                                 "errno: %d (%m)\n"
                                 "i: %d\n"
@@ -113,9 +114,10 @@ int main(int argc, char *argv[]){
                     } else if (readret > 0) {
                         aint[readret] = '\0';
                         time_t alivetime = time(NULL) - startup_time;
-                        printf("[+] Connection %d returned after %ldm %lds: %s\n", i, alivetime/60, alivetime%60, aint);
+                        msg("[+] Connection %d returned after %ldm %lds: %s\n",
+                               i, alivetime/60, alivetime%60, aint);
                     } else {
-                        printf("[-] Shoudln't happen. Connection %d\n", i);
+                        msg("[-] Shouldn't happen. Connection %d\n", i);
                     }
 
                     close(tcpsessions[i]);
@@ -123,7 +125,7 @@ int main(int argc, char *argv[]){
                 }
             }
         } else {
-            printf("[+] No data\n");
+            msg("[+] No data\n");
         }
     }
 

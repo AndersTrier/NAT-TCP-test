@@ -6,7 +6,7 @@ I wrote a more thorough explanation of this issue on my blog, and blamed my ISP 
 
 But here's the tl;dr:
 
-To be [RFC5382](https://tools.ietf.org/html/rfc5382) compliant, the NAT should wait at least 2 hours and 4 minutes before dropping the connection from its NAT table.
+To be [RFC5382](https://tools.ietf.org/html/rfc5382) compliant, the NAT should wait at least 2 hours and 4 minutes before dropping the idle connection from its NAT table.
 This value allows TCP keepalives to do its job, since the interval before a keepalive packet is sent "[MUST default to no less than two hours](https://tools.ietf.org/html/rfc1122)", giving the keepalives a 4 minute window to rescue the connection.
 
 The idea is to establish some TCP connections to a server, wait some time and then send some data to test if the connections still works. This way we can discover the timeout period before the NAT will drop the connection. 

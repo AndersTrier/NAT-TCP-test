@@ -2,7 +2,11 @@ use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::Read;
 use std::io::Write;
+use std::cmp::min;
 use rlimit::*;
+
+// Number of open file descriptors allowed
+const RLIMIT_NOFILE: u64 = 10000;
 
 fn handle_client(mut stream: TcpStream) {
     // Read up to 64 bytes from stream
@@ -25,12 +29,16 @@ fn raise_rlimit_nofile() -> std::io::Result<()> {
     // Allow this process to have many open connections (file descriptors)
     // Check GETRLIMIT(2) - RLIMIT_NOFILE for more info
     let (nofile_soft, nofile_hard) = getrlimit(Resource::NOFILE)?;
-    if nofile_soft != nofile_hard {
+    if nofile_soft < RLIMIT_NOFILE {
         // GETRLIMIT(2):
         // The hard limit acts  as  a  ceiling  for  the  soft
         // limit:  an  unprivileged process may set only its soft limit to a value
         // in the range from 0 up to the hard limit
-        return setrlimit(Resource::NOFILE, nofile_hard, nofile_hard);
+        let newlimit = min(RLIMIT_NOFILE, nofile_hard);
+        match setrlimit(Resource::NOFILE, newlimit, nofile_hard) {
+            Ok(()) => println!("Raised RLIMIT_NOFILE from {} to {}", nofile_soft, newlimit),
+            Err(error) => return Err(error)
+        }
     }
     Ok(())
 }
